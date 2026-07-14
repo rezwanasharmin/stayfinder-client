@@ -23,9 +23,9 @@ function LoginContent() {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      router.push(redirectPath);
+      window.location.href = redirectPath;
     }
-  }, [user, router, redirectPath]);
+  }, [user, redirectPath]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,8 +42,7 @@ function LoginContent() {
 
     if (res.success) {
       showToast('Logged in successfully!', 'success');
-      router.push(redirectPath);
-      router.refresh();
+      window.location.href = redirectPath;
     } else {
       setError(res.error || 'Invalid credentials');
       showToast(res.error || 'Login failed', 'error');
@@ -65,8 +64,7 @@ function LoginContent() {
 
     if (res.success) {
       showToast(`Logged in as Demo ${type === 'admin' ? 'Admin' : 'User'}!`, 'success');
-      router.push(redirectPath);
-      router.refresh();
+      window.location.href = redirectPath;
     } else {
       setError(res.error || 'Failed to authenticate demo user');
       showToast('Demo login failed', 'error');

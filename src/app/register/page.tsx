@@ -22,9 +22,9 @@ export default function RegisterPage() {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      router.push('/');
+      window.location.href = '/';
     }
-  }, [user, router]);
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,8 +46,7 @@ export default function RegisterPage() {
 
     if (res.success) {
       showToast('Registration successful! Welcome.', 'success');
-      router.push('/');
-      router.refresh();
+      window.location.href = '/';
     } else {
       setError(res.error || 'Registration failed');
       showToast(res.error || 'Registration failed', 'error');
