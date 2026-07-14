@@ -58,7 +58,7 @@ function LoginContent() {
     setError('');
 
     const demoEmail = type === 'admin' ? 'admin@stayfinder.com' : 'user@stayfinder.com';
-    const demoPassword = 'password123';
+    const demoPassword = type === 'admin' ? 'stayfinderAdmin2026!' : 'password123';
 
     setEmail(demoEmail);
     setPassword(demoPassword);
