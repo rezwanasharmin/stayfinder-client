@@ -19,13 +19,17 @@ function LoginContent() {
   const [error, setError] = useState('');
 
   const redirectPath = searchParams.get('redirect') || '/';
+  const safeRedirect = (redirectPath.includes('/login') || redirectPath.includes('/register')) ? '/' : redirectPath;
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) {
-      window.location.href = redirectPath;
+    if (user && typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      if (currentPath === '/login' && safeRedirect !== '/login') {
+        window.location.href = safeRedirect;
+      }
     }
-  }, [user, redirectPath]);
+  }, [user, safeRedirect]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +46,7 @@ function LoginContent() {
 
     if (res.success) {
       showToast('Logged in successfully!', 'success');
-      window.location.href = redirectPath;
+      window.location.href = safeRedirect;
     } else {
       setError(res.error || 'Invalid credentials');
       showToast(res.error || 'Login failed', 'error');
@@ -64,7 +68,7 @@ function LoginContent() {
 
     if (res.success) {
       showToast(`Logged in as Demo ${type === 'admin' ? 'Admin' : 'User'}!`, 'success');
-      window.location.href = redirectPath;
+      window.location.href = safeRedirect;
     } else {
       setError(res.error || 'Failed to authenticate demo user');
       showToast('Demo login failed', 'error');
