@@ -139,7 +139,11 @@ export default function HomePage() {
         });
         if (statsRes.ok) {
           const data = await statsRes.json();
-          setStats(data);
+          setStats({
+            totalListings: data.totalCount || 0,
+            avgPrice: data.averagePrice || 0,
+            categoryStats: data.categories || []
+          });
         }
       } catch (err) {
         console.error('Failed to load data', err);
