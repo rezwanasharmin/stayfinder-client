@@ -81,8 +81,15 @@ export default function ManageListingsPage() {
     setConfirmDeleteId(null);
     setDeletingId(id);
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('stayfinder_token') : null;
+      const headers: any = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const res = await fetch(`${API_BASE}/api/items/${id}`, {
         method: 'DELETE',
+        headers,
         credentials: 'include'
       });
 

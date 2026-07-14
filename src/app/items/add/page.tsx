@@ -67,9 +67,15 @@ export default function AddListingPage() {
     ];
 
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('stayfinder_token') : null;
+      const headers: any = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const res = await fetch(`${API_BASE}/api/items`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           title,
           shortDescription,

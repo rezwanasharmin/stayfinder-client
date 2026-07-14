@@ -30,12 +30,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchSession = async () => {
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('stayfinder_token') : null;
+      const headers: any = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       const res = await fetch(`${API_BASE}/api/auth/me`, {
+        headers,
         credentials: 'include'
       });
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
+      } else {
+        // If /me returns error, token might be invalid/expired, so clear it
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('stayfinder_token');
+        }
+        setUser(null);
       }
     } catch (err) {
       console.error('Failed to load session:', err);
@@ -61,6 +73,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!res.ok) {
         return { success: false, error: data.error || 'Login failed' };
       }
+      if (data.token && typeof window !== 'undefined') {
+        localStorage.setItem('stayfinder_token', data.token);
+      }
       setUser(data.user);
       router.refresh();
       return { success: true };
@@ -81,6 +96,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!res.ok) {
         return { success: false, error: data.error || 'Registration failed' };
       }
+      if (data.token && typeof window !== 'undefined') {
+        localStorage.setItem('stayfinder_token', data.token);
+      }
       setUser(data.user);
       router.refresh();
       return { success: true };
@@ -91,13 +109,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('stayfinder_token') : null;
+      const headers: any = {};
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       await fetch(`${API_BASE}/api/auth/logout`, { 
         method: 'POST',
+        headers,
         credentials: 'include'
       });
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('stayfinder_token');
+      }
       setUser(null);
-      router.push('/');
-      router.refresh();
+      window.location.href = '/';
     } catch (err) {
       console.error('Failed to log out:', err);
     }
