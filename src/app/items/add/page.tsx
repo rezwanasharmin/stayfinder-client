@@ -84,7 +84,7 @@ export default function AddListingPage() {
           location,
           category,
           dateAvailable,
-          imageUrl,
+          imageUrl: imageUrl.trim() || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80',
           priority,
           specs
         }),
